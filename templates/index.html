@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='home/style.css') }}">
+{% endblock %}
+
+{% block head %}
+<title>Accident Detection</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>Accident Detection</h1>
+
+    <form action="{{ url_for('form_submitted') }}" method="POST">
+        <div class="mb-3">
+            <label for="file" class="form-label">Upload a video</label>
+            <input class="form-control" type="file" id="file">
+        </div>
+        
+        <div class="mb-3">
+            <label for="startTimestamp" class="form-label">Starting timestamp</label>
+            <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="startTimestamp" min="0">
+        </div>
+        
+        <div class="mb-3">
+            <label for="endTimestamp" class="form-label">Ending timestamp</label>
+            <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="endTimestamp" min="0">
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <hr>
+
+    <h3>Prediction probabilitites:</h3>
+    <p>Accident: </p>
+    <p>No accident: </p>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='home/script.js') }}"></script>
+{% endblock %}
