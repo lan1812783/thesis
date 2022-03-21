@@ -60,4 +60,4 @@ def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mo
     return model.predict(processed_video)
 
 def get_prediction():
-    print(predict("RoadAccidents002_x264.mp4", 7, 10))
+    return predict("RoadAccidents002_x264.mp4", 7, 10)

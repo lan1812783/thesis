@@ -14,12 +14,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/', methods=['POST'])
 def form_submitted():
-    get_prediction()
-    return render_template('index.html')
+    probability = get_prediction()[0][0]
+    return render_template('index.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', accidentProbability="", noAccidentProbability="")
 
 # def allowed_file(filename):
 #     return '.' in filename and \
