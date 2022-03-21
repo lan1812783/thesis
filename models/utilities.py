@@ -21,6 +21,7 @@ class BackboneHandler:
     self.__input_size = backbone_dict["input_size"]
     self.__preprocess_fn, self.__load_fn = backbone_dict["wrapper"](self.get_backbone_input_shape())
     self.__model = self.__load_fn()
+    self.__model.trainable = False
 
   def get_model(self):
     return self.__model

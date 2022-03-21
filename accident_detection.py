@@ -43,14 +43,14 @@ def load_video(video_file, start_timestamp = 0, end_timestamp = 0, frame_size = 
     return preprocess_func(tf.convert_to_tensor(frames)) # return retrieved frame list after preprocessing
 
 def process_video(video_name, start_timestamp=0, end_timestamp=3, input_size=(224, 224), preprocess_func=(lambda x: x)):
-    loaded_data = [load_video(
+    loaded_data = tf.expand_dims(load_video(
                             "videos/" + video_name,
                             start_timestamp,
                             end_timestamp,
                             input_size,
-                            preprocess_func)]
+                            preprocess_func), axis=0)
 
-    return loaded_data
+    return tf.convert_to_tensor(loaded_data)
 
 def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mobilenet"):
     model, input_size, preprocess_func = construct_model(backbone_name)
