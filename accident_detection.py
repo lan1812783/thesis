@@ -44,7 +44,7 @@ def load_video(video_file, start_timestamp = 0, end_timestamp = 0, frame_size = 
 
 def process_video(video_name, start_timestamp=0, end_timestamp=3, input_size=(224, 224), preprocess_func=(lambda x: x)):
     loaded_data = tf.expand_dims(load_video(
-                            "videos/" + video_name,
+                            video_name,
                             start_timestamp,
                             end_timestamp,
                             input_size,
@@ -59,5 +59,5 @@ def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mo
 
     return model.predict(processed_video)
 
-def get_prediction():
-    return predict("RoadAccidents002_x264.mp4", 7, 10)
+def get_prediction(video_name="videos/RoadAccidents002_x264.mp4", start_timestamp=0, end_timestamp=3):
+    return predict(video_name, start_timestamp, end_timestamp)

@@ -12,20 +12,20 @@
 <div class="container">
     <h1>Accident Detection</h1>
 
-    <form action="{{ url_for('form_submitted') }}" method="POST">
+    <form action="{{ url_for('form_submitted') }}" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="file" class="form-label">Upload a video</label>
-            <input class="form-control" type="file" id="file">
+            <input class="form-control" type="file" id="file" name="file">
         </div>
         
         <div class="mb-3">
             <label for="startTimestamp" class="form-label">Starting timestamp</label>
-            <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="startTimestamp" min="0">
+            <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="startTimestamp" min="0" name="start">
         </div>
         
         <div class="mb-3">
             <label for="endTimestamp" class="form-label">Ending timestamp</label>
-            <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="endTimestamp" min="0">
+            <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="endTimestamp" min="0" name="end">
         </div>
         
         <button type="submit" class="btn btn-primary">Submit</button>
