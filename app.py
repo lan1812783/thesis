@@ -30,12 +30,12 @@ def form_submitted():
         flash('No selected file')
         return redirect(request.url)
     if file and allowed_file(file.filename):
+        print(request.__dict__)
         filename = secure_filename(file.filename)
         filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filename)
         start_timestamp = float(request.form['start'])
         end_timestamp = float(request.form['end'])
-        print(filename)
         probability = get_prediction(filename, start_timestamp, end_timestamp)[0][0]
         return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
     return redirect(request.url)
