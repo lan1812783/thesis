@@ -1,9 +1,9 @@
+import os
 from flask import request
 from flask import jsonify
 from flask import Flask, render_template
 from flask import flash, redirect, url_for
 from werkzeug.utils import secure_filename
-import os
 
 from accident_detection import get_prediction
 
@@ -19,7 +19,7 @@ def allowed_file(filename):
 
 @app.route('/prediction', methods=['POST'])
 def form_submitted():
-    # check if the post request has the file part
+    # Check if the post request has the file part
     if 'file' not in request.files:
         flash('No file part')
         return redirect(request.url)
