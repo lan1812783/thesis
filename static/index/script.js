@@ -1,10 +1,14 @@
 const accident = document.querySelector("#accident-propability");
 const noAccident = document.querySelector("#no-accident-propability");
 
+accident.addEventListener('change', event => visualize());
+noAccident.addEventListener('change', event => visualize());
+
 const accidentPropability = parseFloat(accident.textContent);
 const noAccidentPropability = parseFloat(noAccident.textContent);
 
 const visualize = () => {
+    console.log("Hello");
     if (isNaN(accidentPropability) || isNaN(noAccidentPropability)) {
         return;
     }
@@ -26,8 +30,7 @@ const visualize = () => {
         .group(category.group().reduceSum(p => p.value));
     
     dc.renderAll();
-}
-
-window.onload = (event) => {
-    visualize();
 };
+
+window.onload = () => visualize();
+document.onload = () => visualize();
