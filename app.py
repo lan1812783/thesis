@@ -7,7 +7,7 @@ import os
 
 from accident_detection import get_prediction
 
-UPLOAD_FOLDER = 'videos/uploads'
+UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'mp4', 'avi'}
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['POST'])
+@app.route('/prediction', methods=['POST'])
 def form_submitted():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -37,7 +37,7 @@ def form_submitted():
         end_timestamp = float(request.form['end'])
         print(filename)
         probability = get_prediction(filename, start_timestamp, end_timestamp)[0][0]
-        return render_template('index.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
+        return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
     return redirect(request.url)
 
 @app.route('/')
