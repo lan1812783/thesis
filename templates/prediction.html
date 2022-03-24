@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block head %}
-<title>Accident Detection</title>
+<title>Prediction</title>
 {% endblock %}
 
 {% block body %}
 <div class="container">
-    <h3>Prediction probabilitites:</h3>
+    <h3>Prediction probabilitites</h3>
     <p>Accident: <span id="accident-propability">{{ accidentProbability }}</span></p>
     <p>No accident: <span id="no-accident-propability">{{ noAccidentProbability }}</span></p>
 
     <div>
-        <div class="row-chart"></div>
-        <div class="pie-chart"></div>
+        <div id="row-chart"></div>
+        <div id="pie-chart"></div>
     </div>
 </div>
 {% endblock %}
