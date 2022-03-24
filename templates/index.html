@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='home/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='index/style.css') }}">
 {% endblock %}
 
 {% block head %}
@@ -34,11 +34,16 @@
     <hr>
 
     <h3>Prediction probabilitites:</h3>
-    <p>Accident: {{ accidentProbability }}</p>
-    <p>No accident: {{ noAccidentProbability }}</p>
+    <p>Accident: <span id="accident-propability">{{ accidentProbability }}</span></p>
+    <p>No accident: <span id="no-accident-propability">{{ noAccidentProbability }}</span></p>
+
+    <div>
+        <div class="row-chart"></div>
+        <div class="pie-chart"></div>
+    </div>
 </div>
 {% endblock %}
 
 {% block script %}
-<script src="{{ url_for('static', filename='home/script.js') }}"></script>
+<script src="{{ url_for('static', filename='index/script.js') }}"></script>
 {% endblock %}
