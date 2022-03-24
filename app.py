@@ -32,7 +32,7 @@ def form_submitted():
     if file and allowed_file(file.filename):
         print(request.__dict__)
         filename = secure_filename(file.filename)
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
+        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filename)
         start_timestamp = float(request.form['start'])
         end_timestamp = float(request.form['end'])
