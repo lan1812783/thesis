@@ -10,7 +10,7 @@ const predictions =
         {category: "No accident", "probability": noAccidentPropability}
     ];
 
-const cf = cossfilter(predictions);
+const cf = crossfilter(predictions);
 const category = cf.dimension(p => p.category);
 
 dc.rowChart("#row-chart")
