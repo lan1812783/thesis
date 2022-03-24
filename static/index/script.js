@@ -5,7 +5,7 @@ const accidentPropability = parseFloat(accident.textContent);
 const noAccidentPropability = parseFloat(noAccident.textContent);
 
 const visualize = () => {
-    if (isNan(accidentPropability) || isNan(noAccidentPropability)) {
+    if (isNaN(accidentPropability) || isNaN(noAccidentPropability)) {
         return;
     }
     
