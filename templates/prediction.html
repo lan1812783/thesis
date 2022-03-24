@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='prediction/style.css') }}">
+{% endblock %}
+
+{% block head %}
+<title>Accident Detection</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h3>Prediction probabilitites:</h3>
+    <p>Accident: <span id="accident-propability">{{ accidentProbability }}</span></p>
+    <p>No accident: <span id="no-accident-propability">{{ noAccidentProbability }}</span></p>
+
+    <div>
+        <div class="row-chart"></div>
+        <div class="pie-chart"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/dc.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+<script src="{{ url_for('static', filename='prediction/script.js') }}"></script>
+{% endblock %}
