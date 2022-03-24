@@ -1,20 +1,7 @@
 """# **Import dependencies**"""
 
-# import numpy as np
-# import cv2
-# import tensorflow as tf
-# from tensorflow import keras
-from tensorflow.keras import Sequential
-# from tensorflow.keras.layers import InputLayer, Input, TimeDistributed
-# from tensorflow.keras.layers import ConvLSTM2D, BatchNormalization, Flatten, Dense, Dropout, GlobalAveragePooling2D, Lambda, Conv3D, MaxPooling3D
-# from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy, SparseCategoricalCrossentropy
-from tensorflow.keras.metrics import Precision, Recall
-
 from .defines import CONFIG_DICT
 from .utilities import BackboneHandler, AccidentDetector
-# from visualize import *
 
 def get_file_weights_name(backbone_name):
   return "models/model_weights/" + backbone_name + '_weight.h5'

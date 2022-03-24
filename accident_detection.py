@@ -1,5 +1,6 @@
 from models.dependencies import *
 from models.model_conv3d import construct_model
+from models.visualize import save_grad_cam
 
 SEGMENT_LENGTH = 100
 
@@ -57,7 +58,9 @@ def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mo
 
     processed_video = process_video(video_name, start_timestamp, end_timestamp, input_size, preprocess_func)
 
-    return model.predict(processed_video)
+    return model.predict(processed_video), save_grad_cam(model, processed_video)
 
 def get_prediction(video_name="videos/RoadAccidents002_x264.mp4", start_timestamp=0, end_timestamp=3):
-    return predict(video_name, start_timestamp, end_timestamp)
+    prediction, grad_cam_path = predict(video_name, start_timestamp, end_timestamp)
+
+    return prediction, grad_cam_path

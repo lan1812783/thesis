@@ -2,4 +2,5 @@ __pycache__
 env
 models/__pycache__
 models/model_weights
+uploads/*
 github_access_token.txt

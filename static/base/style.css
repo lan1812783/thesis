@@ -1,28 +1,25 @@
-.footer-icon-row{
+.footer-icon-row {
     height: 64px; 
     display: flex; 
-    flex-direction: row;
     justify-content: center;
 }
 
-.footer-icon{
-    display: flex; 
-    flex-direction: row;
-    /* justify-content: space-between; */
+.footer-icon {
+    display: flex;
 }
 
-.footer-icon-divider{
-    margin: 0 15px;
-    height: 100%;
-    background-color: white;
+.footer-icon-divider {
     width: 2px;
+    height: 100%;
+    margin: 0 15px;
+    background-color: white;
 }
 
-.footer-copyright{
+.footer-copyright {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.footer{
-    background-color: #dfdfdf; 
+.footer {
     margin-top: 64px;
+    background-color: #dfdfdf; 
 }

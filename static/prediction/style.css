@@ -6,3 +6,8 @@
 h3 {
     text-align: center;
 }
+
+hr {
+    width: 70%;
+    margin: 1em auto;
+}

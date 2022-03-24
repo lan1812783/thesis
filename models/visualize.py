@@ -68,7 +68,6 @@ def sigmoid(x, a, b, c):
     return c / (1 + np.exp(-a * (x-b)))
 
 def superimpose(img_bgr, cam, thresh, emphasize=False):
-    
     '''
     Superimposes a grad-cam heatmap onto an image for model interpretation and visualization.
     
@@ -100,17 +99,16 @@ def superimpose(img_bgr, cam, thresh, emphasize=False):
 ## Grad-CAM heatmap for the last convolutional layer in the model, Conv_1
 
 import math
-import random
 import matplotlib.pyplot as plt
 
-def print_grad_cam(model):
-  test_data_index = 23
-  test_data_sample = test_data[test_data_index]
-  clip = np.concatenate((test_data_sample[:5], test_data_sample[45:50], test_data_sample[-5:]))
+def save_grad_cam(model, data):
+  GRAD_CAM_RESULT_PATH = "visualization/Grad-CAM.png"
+
+  clip = np.concatenate((data[:5], data[45:50], data[-5:]))
 
   num_imgs_in_row = 4
 
-  layer_name = "relu"
+  layer_name = model.layers[-1].name
   plt.figure(figsize=(50, 50))
   for i, img in enumerate(clip):
     grad_cam=GradCam(model, np.expand_dims(img, axis=0), layer_name)
@@ -120,12 +118,15 @@ def print_grad_cam(model):
     img = (((img - clip_min) / (clip_max - clip_min)) * 255).astype(np.uint8)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    ax = plt.subplot(math.ceil(len(clip) / num_imgs_in_row) * 2, num_imgs_in_row, 2 * i + 1)
+    plt.subplot(math.ceil(len(clip) / num_imgs_in_row) * 2, num_imgs_in_row, 2 * i + 1)
     plt.imshow(img)
 
     grad_cam_superimposed = superimpose(img, grad_cam, 0.5, emphasize=True)
-    ax = plt.subplot(math.ceil(len(clip) / num_imgs_in_row) * 2, num_imgs_in_row, 2 * i + 2)
+    plt.subplot(math.ceil(len(clip) / num_imgs_in_row) * 2, num_imgs_in_row, 2 * i + 2)
     plt.imshow(grad_cam_superimposed)
     
     plt.axis("off")
   plt.tight_layout()
+  plt.savefig(GRAD_CAM_RESULT_PATH)
+  
+  return GRAD_CAM_RESULT_PATH
