@@ -17,6 +17,11 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@app.route('/prediction', methods=['GET'])
+def test_prediction():
+    probability = 0.44444444
+    return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
+
 @app.route('/prediction', methods=['POST'])
 def form_submitted():
     # Check if the post request has the file part

@@ -30,4 +30,4 @@ def construct_model(backbone_name="mobilenet"):
 
   model.load_weights(get_file_weights_name(BACKBONE_NAME))
 
-  return model, handler.get_backbone_input_size(), handler.prepare_frames
+  return model, backbone, handler.get_backbone_input_size(), handler.prepare_frames

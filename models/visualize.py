@@ -1,6 +1,6 @@
 """# **Grad-CAM**"""
 
-from dependencies import *
+from .dependencies import *
 
 def GradCam(model, img_array, layer_name, eps=1e-8):
     '''
@@ -102,14 +102,14 @@ import math
 import matplotlib.pyplot as plt
 
 def save_grad_cam(backbone, data):
-  GRAD_CAM_RESULT_PATH = "visualization/Grad-CAM.png"
+  GRAD_CAM_RESULT_PATH = "static/visualization/Grad-CAM.png"
 
-  clip = np.concatenate((data[:5], data[45:50], data[-5:]))
+  clip = np.concatenate((data[:3], data[47:50], data[-3:]))
 
-  num_imgs_in_row = 4
+  num_imgs_in_row = 6
 
   layer_name = backbone.layers[-1].name
-  plt.figure(figsize=(50, 50))
+  plt.figure(figsize=(50, 25))
   for i, img in enumerate(clip):
     grad_cam=GradCam(backbone, np.expand_dims(img, axis=0), layer_name)
 
@@ -118,11 +118,11 @@ def save_grad_cam(backbone, data):
     img = (((img - clip_min) / (clip_max - clip_min)) * 255).astype(np.uint8)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    plt.subplot(math.ceil(len(clip) / num_imgs_in_row) * 2, num_imgs_in_row, 2 * i + 1)
+    plt.subplot(math.ceil((len(clip) / num_imgs_in_row) * 2), num_imgs_in_row, 2 * i + 1)
     plt.imshow(img)
 
     grad_cam_superimposed = superimpose(img, grad_cam, 0.5, emphasize=True)
-    plt.subplot(math.ceil(len(clip) / num_imgs_in_row) * 2, num_imgs_in_row, 2 * i + 2)
+    plt.subplot(math.ceil((len(clip) / num_imgs_in_row) * 2), num_imgs_in_row, 2 * i + 2)
     plt.imshow(grad_cam_superimposed)
     
     plt.axis("off")

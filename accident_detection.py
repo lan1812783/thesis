@@ -58,7 +58,7 @@ def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mo
 
     processed_video = process_video(video_name, start_timestamp, end_timestamp, input_size, preprocess_func)
 
-    return model.predict(processed_video), save_grad_cam(backbone, processed_video)
+    return model.predict(processed_video), save_grad_cam(backbone, processed_video[0])
 
 def get_prediction(video_name="videos/RoadAccidents002_x264.mp4", start_timestamp=0, end_timestamp=3):
     prediction, grad_cam_path = predict(video_name, start_timestamp, end_timestamp)
