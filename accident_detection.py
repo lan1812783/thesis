@@ -54,11 +54,11 @@ def process_video(video_name, start_timestamp=0, end_timestamp=3, input_size=(22
     return tf.convert_to_tensor(loaded_data)
 
 def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mobilenet"):
-    model, input_size, preprocess_func = construct_model(backbone_name)
+    model, backbone, input_size, preprocess_func = construct_model(backbone_name)
 
     processed_video = process_video(video_name, start_timestamp, end_timestamp, input_size, preprocess_func)
 
-    return model.predict(processed_video), save_grad_cam(model, processed_video)
+    return model.predict(processed_video), save_grad_cam(backbone, processed_video)
 
 def get_prediction(video_name="videos/RoadAccidents002_x264.mp4", start_timestamp=0, end_timestamp=3):
     prediction, grad_cam_path = predict(video_name, start_timestamp, end_timestamp)

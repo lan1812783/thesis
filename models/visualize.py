@@ -101,17 +101,17 @@ def superimpose(img_bgr, cam, thresh, emphasize=False):
 import math
 import matplotlib.pyplot as plt
 
-def save_grad_cam(model, data):
+def save_grad_cam(backbone, data):
   GRAD_CAM_RESULT_PATH = "visualization/Grad-CAM.png"
 
   clip = np.concatenate((data[:5], data[45:50], data[-5:]))
 
   num_imgs_in_row = 4
 
-  layer_name = model.layers[-1].name
+  layer_name = backbone.layers[-1].name
   plt.figure(figsize=(50, 50))
   for i, img in enumerate(clip):
-    grad_cam=GradCam(model, np.expand_dims(img, axis=0), layer_name)
+    grad_cam=GradCam(backbone, np.expand_dims(img, axis=0), layer_name)
 
     clip_max = np.amax(img)
     clip_min = np.amin(img)
