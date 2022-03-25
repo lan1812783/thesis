@@ -1,6 +1,6 @@
 """# **Grad-CAM**"""
 
-from dependencies import *
+from .dependencies import *
 
 def GradCam(model, img_array, layer_name, eps=1e-8):
     '''
