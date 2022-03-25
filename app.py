@@ -48,6 +48,14 @@ def form_submitted():
     # probability = 0.44444
     # return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
 
+@app.route('/statistics')
+def statistics():
+    return render_template('statistics.html', backbones=["Mobilenet", "VGG16"])
+
+@app.route('/about_us')
+def about_us():
+    return render_template('about_us.html')
+
 @app.route('/')
 def index():
     return render_template('index.html')
