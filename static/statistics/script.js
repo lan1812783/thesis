@@ -1,3 +1,4 @@
+const allLabelsFilter = (legendItem, data) => {return !isROC || legendItem.text !== 'No-skill';}
 
 const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => {
     // ===== Data =====
@@ -53,7 +54,7 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
             },
             legend: {
                 labels: {
-                    filter: (legendItem, data) => !isROC || legendItem.text !== 'No-skill'
+                    filter: allLabelsFilter
                 }
             }
         }
@@ -73,8 +74,8 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
         document.querySelector(queryString),
         config
     );
-    console.log(chart.data)
-}
+    console.log(chart.data);
+};
 
 const ROCChart = drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
 const modelTrainAccuracyChart = drawCurves(queryString = '#model-train-accuracy-chart', title = "Model train accuracy", x_dataKey = "epochs", y_dataKey = "model_train_accuracy");
@@ -82,9 +83,32 @@ const modelValAccuracyChart = drawCurves(queryString = '#model_val_accuracy', ti
 const modelTrainLossChart = drawCurves(queryString = '#model_train_loss', title = "Model train loss", x_dataKey = "epochs", y_dataKey = "model_train_loss");
 const modelValLossChart = drawCurves(queryString = '#model_val_loss', title = "Model validation loss", x_dataKey = "epochs", y_dataKey = "model_val_loss");
 
-
-for (chart in [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart]) {
-    for (let i = 0; i < backbone_info.length; i++) {
-        chart.data.datasets[dsIndex].hidden = backbone_info[i].name == filter;
+const chartFilter = (filter) => {
+    for (const chart of [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart]) {
+        for (let i = 0; i < backbone_info.length; i++) {
+            // chart.getDatasetMeta(i).hidden = backbone_info[i].name !== filter;
+            if (filter === 'all'){
+                chart.options.plugins.legend.labels.filter = allLabelsFilter;
+                chart.data.datasets[i].hidden = false;
+            }
+            else{
+                chart.data.datasets[i].hidden = backbone_info[i].name !== filter;
+                chart.options.plugins.legend.labels.filter = (legendItem, data) => {return legendItem.text === filter;};                
+            }
+            console.log(chart.data.labels);
+            chart.update();
+        }
     }
+};
+
+for (const info of backbone_info){
+    let name = info.name.replace(/ /g,'').toLowerCase();
+    let idName = "v-pills-"+ name + "-tab";
+    document.getElementById(idName).addEventListener("click", () => {chartFilter(info.name); dropdown(info.name);});    
+}
+document.getElementById("v-pills-all-tab").addEventListener("click", () => {chartFilter('all'); dropdown('All');});    
+
+function dropdown(val) {
+    var y = document.getElementsByClassName('btn btn-secondary dropdown-toggle');
+    var aNode = y[0].innerHTML = val; // Append 
 }
