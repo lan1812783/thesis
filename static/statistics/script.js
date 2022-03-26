@@ -1,3 +1,5 @@
+// ===== Data =====
+
 const _datasets = backbone_info.map((info, index) => {
     const r = Math.random() * 255;
     const g = Math.random() * 255;
@@ -37,24 +39,32 @@ const data = {
     datasets: _datasets
 };
 
+// ===== Options =====
+
+const options = {
+    plugins: {
+        title: {
+            display: true,
+            text: 'ROC Curves'
+        }
+    },
+    // Doesn't work
+    legend: {
+        labels: {
+            filter: (legendItem, data) => legendItem.text !== 'No-skill'
+        }
+    },
+};
+
+// ===== Config =====
+
 const config = {
     type: 'scatter',
     data: data,
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: 'ROC Curves'
-            }
-        },
-        // Doesn't work
-        legend: {
-            labels: {
-                filter: (legendItem, data) => legendItem.text !== 'No-skill'
-            }
-        },
-    }
+    options: options
 };
+
+// ===== Chart =====
 
 const myChart = new Chart(
     document.getElementById('chart'),
