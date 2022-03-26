@@ -26,12 +26,24 @@
         </div>
     </div>
 
-    {% for info in backbone_info %}
-        <div class="tab-pane fade {{ 'active' if loop.index == 1 else '' }}" id="v-pills-{{ name }}" role="tabpanel" aria-labelledby="v-pills-{{ name }}-tab">{{ info.name }}</div>
-    {% endfor %}
+    <div>
+        <canvas id="ROC-chart"></canvas>
+    </div>
 
     <div>
-        <canvas id="chart"></canvas>
+        <canvas id="model-train-accuracy-chart"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model_val_accuracy"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model_train_loss"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model_val_loss"></canvas>
     </div>
 </div>
 {% endblock %}
@@ -40,24 +52,26 @@
 <script>
     class BackboneInfo {
         constructor(name, fpr, tpr, tresholds, auc, backbone_train_accuracy, backbone_val_accuracy, backbone_train_loss, backbone_val_loss, model_train_accuracy, model_val_accuracy, model_train_loss, model_val_loss) {
-            this.name = name
-            this.fpr = fpr
-            this.tpr = tpr
-            this.tresholds = tresholds
-            this.auc = auc
-            this.backbone_train_accuracy = backbone_train_accuracy
-            this.backbone_val_accuracy = backbone_val_accuracy
-            this.backbone_train_loss = backbone_train_loss
-            this.backbone_val_loss = backbone_val_loss
-            this.model_train_accuracy = model_train_accuracy
-            this.model_val_accuracy = model_val_accuracy
-            this.model_train_loss = model_train_loss
-            this.model_val_loss = model_val_loss
+            this.name = name;
+            this.fpr = fpr;
+            this.tpr = tpr;
+            this.tresholds = tresholds;
+            this.auc = auc;
+            this.backbone_train_accuracy = backbone_train_accuracy;
+            this.backbone_val_accuracy = backbone_val_accuracy;
+            this.backbone_train_loss = backbone_train_loss;
+            this.backbone_val_loss = backbone_val_loss;
+            this.model_train_accuracy = model_train_accuracy;
+            this.model_val_accuracy = model_val_accuracy;
+            this.model_train_loss = model_train_loss;
+            this.model_val_loss = model_val_loss;
+
+            this.epochs = [...Array(model_train_accuracy.length).keys()]; // creat array from 0->n-1
         }
     }
     
     const backbone_info = [];
-    "{% for info in backbone_info %}"
+    {% for info in backbone_info %}
         backbone_info.push(
             new BackboneInfo(
                 "{{ info.name }}",
@@ -74,21 +88,9 @@
                 {{ info.model_train_loss }},
                 {{ info.model_val_loss }}
             ));
-    "{% endfor %}"
-
-    // const fpr = [];
-    // const tpr = [];
-    // for (backbone_name in backbone_info) {
-    //     backbone_name.fpr.push()
-    // }
-    // const fpr = "{{ backbone_info.fpr }}";
-    // const tpr = "{{ backbone_info.tpr }}";
-    // const backbone_info = 5;
+    {% endfor %}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/dc.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
 <script src="{{ url_for('static', filename='statistics/script.js') }}"></script>
 {% endblock %}
