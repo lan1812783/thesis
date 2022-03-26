@@ -26,24 +26,26 @@
         </div>
     </div>
 
-    <div>
-        <canvas id="ROC-chart"></canvas>
-    </div>
+    <div class="charts">
+        <div>
+            <canvas id="model-train-accuracy-chart"></canvas>
+        </div>
+        
+        <div>
+            <canvas id="model_val_accuracy"></canvas>
+        </div>
+        
+        <div>
+            <canvas id="model_train_loss"></canvas>
+        </div>
+        
+        <div>
+            <canvas id="model_val_loss"></canvas>
+        </div>
 
-    <div>
-        <canvas id="model-train-accuracy-chart"></canvas>
-    </div>
-
-    <div>
-        <canvas id="model_val_accuracy"></canvas>
-    </div>
-
-    <div>
-        <canvas id="model_train_loss"></canvas>
-    </div>
-
-    <div>
-        <canvas id="model_val_loss"></canvas>
+        <div>
+            <canvas id="ROC-chart"></canvas>
+        </div>
     </div>
 </div>
 {% endblock %}

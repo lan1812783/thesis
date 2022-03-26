@@ -69,15 +69,22 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
 
     // ===== Chart =====
 
-    const chart = new Chart(
+    return new Chart(
         document.querySelector(queryString),
         config
     );
     console.log(chart.data)
 }
 
-drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
-drawCurves(queryString = '#model-train-accuracy-chart', title = "Model train accuracy", x_dataKey = "epochs", y_dataKey = "model_train_accuracy");
-drawCurves(queryString = '#model_val_accuracy', title = "Model validation accuracy", x_dataKey = "epochs", y_dataKey = "model_val_accuracy");
-drawCurves(queryString = '#model_train_loss', title = "Model train loss", x_dataKey = "epochs", y_dataKey = "model_train_loss");
-drawCurves(queryString = '#model_val_loss', title = "Model validation loss", x_dataKey = "epochs", y_dataKey = "model_val_loss");
+const ROCChart = drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
+const modelTrainAccuracyChart = drawCurves(queryString = '#model-train-accuracy-chart', title = "Model train accuracy", x_dataKey = "epochs", y_dataKey = "model_train_accuracy");
+const modelValAccuracyChart = drawCurves(queryString = '#model_val_accuracy', title = "Model validation accuracy", x_dataKey = "epochs", y_dataKey = "model_val_accuracy");
+const modelTrainLossChart = drawCurves(queryString = '#model_train_loss', title = "Model train loss", x_dataKey = "epochs", y_dataKey = "model_train_loss");
+const modelValLossChart = drawCurves(queryString = '#model_val_loss', title = "Model validation loss", x_dataKey = "epochs", y_dataKey = "model_val_loss");
+
+
+for (chart in [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart]) {
+    for (let i = 0; i < backbone_info.length; i++) {
+        chart.data.datasets[dsIndex].hidden = backbone_info[i].name == filter;
+    }
+}
