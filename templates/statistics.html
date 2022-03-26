@@ -27,7 +27,23 @@
     </div>
 
     <div>
-        <canvas id="chart"></canvas>
+        <canvas id="ROC-chart"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model-train-accuracy-chart"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model_val_accuracy"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model_train_loss"></canvas>
+    </div>
+
+    <div>
+        <canvas id="model_val_loss"></canvas>
     </div>
 </div>
 {% endblock %}
@@ -36,24 +52,26 @@
 <script>
     class BackboneInfo {
         constructor(name, fpr, tpr, tresholds, auc, backbone_train_accuracy, backbone_val_accuracy, backbone_train_loss, backbone_val_loss, model_train_accuracy, model_val_accuracy, model_train_loss, model_val_loss) {
-            this.name = name
-            this.fpr = fpr
-            this.tpr = tpr
-            this.tresholds = tresholds
-            this.auc = auc
-            this.backbone_train_accuracy = backbone_train_accuracy
-            this.backbone_val_accuracy = backbone_val_accuracy
-            this.backbone_train_loss = backbone_train_loss
-            this.backbone_val_loss = backbone_val_loss
-            this.model_train_accuracy = model_train_accuracy
-            this.model_val_accuracy = model_val_accuracy
-            this.model_train_loss = model_train_loss
-            this.model_val_loss = model_val_loss
+            this.name = name;
+            this.fpr = fpr;
+            this.tpr = tpr;
+            this.tresholds = tresholds;
+            this.auc = auc;
+            this.backbone_train_accuracy = backbone_train_accuracy;
+            this.backbone_val_accuracy = backbone_val_accuracy;
+            this.backbone_train_loss = backbone_train_loss;
+            this.backbone_val_loss = backbone_val_loss;
+            this.model_train_accuracy = model_train_accuracy;
+            this.model_val_accuracy = model_val_accuracy;
+            this.model_train_loss = model_train_loss;
+            this.model_val_loss = model_val_loss;
+
+            this.epochs = [...Array(model_train_accuracy.length).keys()]; // creat array from 0->n-1
         }
     }
     
     const backbone_info = [];
-    "{% for info in backbone_info %}"
+    {% for info in backbone_info %}
         backbone_info.push(
             new BackboneInfo(
                 "{{ info.name }}",
@@ -70,7 +88,7 @@
                 {{ info.model_train_loss }},
                 {{ info.model_val_loss }}
             ));
-    "{% endfor %}"
+    {% endfor %}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
