@@ -73,6 +73,7 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
         document.querySelector(queryString),
         config
     );
+    console.log(chart.data)
 }
 
 drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
