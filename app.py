@@ -5,6 +5,7 @@ from flask import Flask, render_template
 from flask import flash, redirect, url_for
 from werkzeug.utils import secure_filename
 
+from models.defines import CONFIG_DICT
 from accident_detection import get_prediction
 
 UPLOAD_FOLDER = 'uploads'
@@ -50,7 +51,7 @@ def form_submitted():
 
 @app.route('/statistics')
 def statistics():
-    return render_template('statistics.html', backbones=["Mobilenet", "VGG16"])
+    return render_template('statistics.html', backbone_info=CONFIG_DICT["backbones"]["info"])
 
 @app.route('/about_us')
 def about_us():

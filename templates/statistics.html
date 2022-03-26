@@ -13,24 +13,79 @@
     <h3>Backbone and Model training curves</h3>
     <div class="d-flex align-items-start">
         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            {% for backbone_name in backbones %}
-                <button class="nav-link {{ 'active' if loop.index == 1 else '' }}" id="v-pills-{{ backbone_name }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-{{ backbone_name }}" type="button" role="tab" aria-controls="v-pills-{{ backbone_name }}" aria-selected="false">{{ backbone_name }}</button>
+            {% for info in backbone_info %}
+                {% set name = info.name.replace(" ", "").lower() %}
+                <button class="nav-link {{ 'active' if loop.index == 1 else '' }}" id="v-pills-{{ name }}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-{{ name }}" type="button" role="tab" aria-controls="v-pills-{{ name }}" aria-selected="false">{{ info.name }}</button>
             {% endfor %}
         </div>
         <div class="tab-content" id="v-pills-tabContent">
-            {% for backbone_name in backbones %}
-                <div class="tab-pane fade {{ 'active' if loop.index == 1 else '' }}" id="v-pills-{{ backbone_name }}" role="tabpanel" aria-labelledby="v-pills-{{ backbone_name }}-tab">...</div>
+            {% for info in backbone_info %}
+                {% set name = info.name.replace(" ", "").lower() %}
+                <div class="tab-pane fade {{ 'active' if loop.index == 1 else '' }}" id="v-pills-{{ name }}" role="tabpanel" aria-labelledby="v-pills-{{ name }}-tab">{{ info.name }}</div>
             {% endfor %}
         </div>
     </div>
 
+    {% for info in backbone_info %}
+        <div class="tab-pane fade {{ 'active' if loop.index == 1 else '' }}" id="v-pills-{{ name }}" role="tabpanel" aria-labelledby="v-pills-{{ name }}-tab">{{ info.name }}</div>
+    {% endfor %}
+
     <div>
-        <canvas id="myChart"></canvas>
+        <canvas id="chart"></canvas>
     </div>
 </div>
 {% endblock %}
 
 {% block script %}
+<script>
+    class BackboneInfo {
+        constructor(name, fpr, tpr, tresholds, auc, backbone_train_accuracy, backbone_val_accuracy, backbone_train_loss, backbone_val_loss, model_train_accuracy, model_val_accuracy, model_train_loss, model_val_loss) {
+            this.name = name
+            this.fpr = fpr
+            this.tpr = tpr
+            this.tresholds = tresholds
+            this.auc = auc
+            this.backbone_train_accuracy = backbone_train_accuracy
+            this.backbone_val_accuracy = backbone_val_accuracy
+            this.backbone_train_loss = backbone_train_loss
+            this.backbone_val_loss = backbone_val_loss
+            this.model_train_accuracy = model_train_accuracy
+            this.model_val_accuracy = model_val_accuracy
+            this.model_train_loss = model_train_loss
+            this.model_val_loss = model_val_loss
+        }
+    }
+    
+    const backbone_info = [];
+    "{% for info in backbone_info %}"
+        backbone_info.push(
+            new BackboneInfo(
+                "{{ info.name }}",
+                {{ info.fpr }},
+                {{ info.tpr }},
+                {{ info.tresholds }},
+                {{ info.auc }},
+                {{ info.backbone_train_accuracy }},
+                {{ info.backbone_val_accuracy }},
+                {{ info.backbone_train_loss }},
+                {{ info.backbone_val_loss }},
+                {{ info.model_train_accuracy }},
+                {{ info.model_val_accuracy }},
+                {{ info.model_train_loss }},
+                {{ info.model_val_loss }}
+            ));
+    "{% endfor %}"
+
+    // const fpr = [];
+    // const tpr = [];
+    // for (backbone_name in backbone_info) {
+    //     backbone_name.fpr.push()
+    // }
+    // const fpr = "{{ backbone_info.fpr }}";
+    // const tpr = "{{ backbone_info.tpr }}";
+    // const backbone_info = 5;
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dc/4.2.7/dc.min.js"></script>
