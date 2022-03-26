@@ -1,0 +1,8 @@
+.charts {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.charts > div {
+    width: 50%;
+}
