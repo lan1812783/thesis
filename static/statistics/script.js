@@ -110,5 +110,21 @@ document.getElementById("v-pills-all-tab").addEventListener("click", () => {char
 
 function dropdown(val) {
     var y = document.getElementsByClassName('btn btn-secondary dropdown-toggle');
-    var aNode = y[0].innerHTML = val; // Append 
+    var aNode = y[0].innerHTML = val; // Append
+
+    // === Confusion matrix ===
+
+    const CM_PATH = "static/visualization/";
+    let cmFile = "";
+    switch (val) {
+        case "Mobile-Net": cmFile = "mobilenet_cm.png"; break;
+        case "Dense-Net 121": cmFile = "densenet_cm.png"; break;
+        case "Inception v3": cmFile = "inception_cm.png"; break;
+        case "Res-Net 152v2": cmFile = "resnet_cm.png"; break;
+        case "VGG16": cmFile = "vgg16_cm.png"; break;
+    }
+    cmFile = CM_PATH + cmFile;
+
+    const cm = document.getElementById('cm');
+    cm.style.backgroundImage = "url('" + cmFile + "')";
 }
