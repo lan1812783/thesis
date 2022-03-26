@@ -67,6 +67,8 @@
             this.model_val_loss = model_val_loss;
 
             this.epochs = [...Array(model_train_accuracy.length).keys()]; // creat array from 0->n-1
+            this.epochs.shift(); // remove 0 => 1->n-1
+            this.epochs.push(model_train_accuracy.length) // add n => 1->n
         }
     }
     
