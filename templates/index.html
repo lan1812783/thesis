@@ -19,6 +19,21 @@
         </div>
         
         <div class="mb-3">
+            <select class="form-select" aria-label="Default select example" name="model_type">
+                <option selected value="All">All</option>
+                <option value="Mobile-Net">Mobile-Net</option>
+                <option value="VGG16">VGG16</option>
+                <option value="Res-Net 152v2">Res-Net 152v2</option>
+                <option value="Dense-Net 121">Dense-Net 121</option>
+                <option value="Inception v3">Inception v3</option>
+                <option value="CBAM">CBAM</option>
+                <!-- {% for name in backbone_info_name %}
+                    <option value="{{ name }}">{{name}}</option>                
+                {% endfor %} -->
+            </select>
+        </div>
+
+        <div class="mb-3">
             <label for="startTimestamp" class="form-label">Starting timestamp</label>
             <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="startTimestamp" min="0" name="start" required>
         </div>
@@ -27,6 +42,7 @@
             <label for="endTimestamp" class="form-label">Ending timestamp</label>
             <input class="form-control" type="number" placeholder="Default input" aria-label="default input example" id="endTimestamp" min="0" name="end" required>
         </div>
+
         
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

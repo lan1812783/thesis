@@ -2,6 +2,8 @@
 
 from .defines import CONFIG_DICT
 from .utilities import BackboneHandler, AccidentDetector
+from .cbam import AccidentDetector as CBAMAccidentDetector
+from .cbam import VisualAttentionModule
 
 def get_file_weights_name(backbone_name):
   return "models/model_weights/" + backbone_name + '_weight.h5'
@@ -15,15 +17,22 @@ def construct_model(backbone_name="mobilenet"):
       + Backbone prepocess function
     **
   """
-
-  if backbone_name not in CONFIG_DICT["backbones"]:
-    raise AssertionError("No backbone found!")
-
+  print(backbone_name)
+    
   BACKBONE_NAME = backbone_name
-  handler = BackboneHandler(BACKBONE_NAME)
-  backbone = handler.get_model()
-  # backbone.summary()
-  model = AccidentDetector(backbone)
+  
+  if backbone_name == "cbam":
+    handler = BackboneHandler("resnet152v2")
+    backbone = VisualAttentionModule()
+    backbone.build((None, *handler.get_backbone_input_shape()))
+    model = CBAMAccidentDetector(backbone)
+  else:
+    if backbone_name not in CONFIG_DICT["backbones"]:
+      raise AssertionError("No backbone found!")
+    handler = BackboneHandler(BACKBONE_NAME)
+    backbone = handler.get_model()
+    # backbone.summary()
+    model = AccidentDetector(backbone)
   model.build((None, None, *handler.get_backbone_input_shape()))
   model.summary()
   # model.compile(optimizer=Adam(0.0001), loss=BinaryCrossentropy(), metrics=['accuracy', Precision(), Recall()])

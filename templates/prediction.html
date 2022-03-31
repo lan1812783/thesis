@@ -4,10 +4,20 @@
   href="{{ url_for('static', filename='prediction/style.css') }}"
 />
 {% endblock %} {% block head %}
-<title>Prediction</title>
+
+{% if model_type is defined %}
+  <title>Prediction with {{model_type}}</title>
+{% else %}
+  <title>Prediction</title>
+{% endif %}
+
 {% endblock %} {% block body %}
 <div class="container-fluid">
-  <h3>Prediction probabilitites</h3>
+  {% if model_type is defined %}
+    <h3>Prediction probabilitites with {{model_type}}</h3>
+  {% else %}
+    <h3>Prediction probabilitites</h3>
+  {% endif %}
   <div class="prediction-prob">
     <p>
       Accident: <span id="accident-propability">{{ accidentProbability }}</span>

@@ -36,14 +36,20 @@ def form_submitted():
         flash('No selected file')
         return redirect(request.url)
     if file and allowed_file(file.filename):
-        print(request.__dict__)
-        filename = secure_filename(file.filename)
-        filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filename)
-        start_timestamp = float(request.form['start'])
-        end_timestamp = float(request.form['end'])
-        probability = get_prediction(filename, start_timestamp, end_timestamp)[0][0]
-        return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
+        model_type = request.form['model_type']
+        model_type_lower = model_type.replace(" ", "").replace("-", "").lower()
+        if model_type == "All":
+            #TODO
+            probability = 0.44444444
+            return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
+        else:
+            filename = secure_filename(file.filename)
+            filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filename)
+            start_timestamp = float(request.form['start'])
+            end_timestamp = float(request.form['end'])
+            probability = get_prediction(filename, start_timestamp, end_timestamp, model_type_lower)[0][0]
+            return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability), model_type=model_type)
     return redirect(request.url)
 
     # probability = 0.44444
@@ -59,7 +65,9 @@ def about_us():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    backbone_info = CONFIG_DICT["backbones"]["info"]
+    backbone_info_name = [info.name for info in backbone_info]
+    return render_template('index.html', backbone_info_name=backbone_info_name)
 
 if __name__ == "__main__":
     app.run(debug=True)
