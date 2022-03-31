@@ -58,7 +58,7 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
                 labels: {
                     filter: allLabelsFilter
                 },
-                onClick: (e) => e.stopPropagation() // disable filter on legend touched, cuz this causes bug
+                onClick: null
             }
         }
     };
@@ -79,78 +79,85 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
     );
 };
 
+
+// === Bar charts ===
+
+const drawBarChart = () => {    
+    
+    const borderColor = backbone_info.map((info, index) => {
+        const r = Math.random() * 255;
+        const g = Math.random() * 255;
+        const b = Math.random() * 255;
+        
+        return `rgba(${r}, ${g}, ${b}, 1)`;
+    });
+
+    const backgroundColor = borderColor.map((rgbaStr) => {
+        const rgbaList = rgbaStr.split(", ");
+        rgbaList[rgbaList.length - 1] = '0.2)'; // alpha value
+    
+        return rgbaList.join(", ");
+    });
+
+    const _data = backbone_info.map((info, index) => {
+        return {
+            label: info.name,
+            backgroundColor: [backgroundColor[index]],
+            borderColor: [borderColor[index]],
+            data: [info['auc']],
+            borderWidth: 1
+        };
+    });
+    
+    console.log(_data)
+    const data = {
+        labels: ['AUC'],
+        datasets: _data
+    };
+    
+    
+    const options = {
+        plugins: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            title: {
+                display: true,
+                text: "AUC Scores"
+            },
+            legend: {
+                labels: {
+                    filter: allLabelsFilter
+                },
+                onClick: null // disable filter on legend touched, cuz this causes bug
+            }
+        }
+    };
+    
+    const config = {
+        type: 'bar',
+        data: data,
+        options: options,
+    };
+    
+    return new Chart(
+        document.querySelector("#AUC-chart"),
+        config
+    );
+}
+
 const ROCChart = drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
 const modelTrainAccuracyChart = drawCurves(queryString = '#model-train-accuracy-chart', title = "Model train accuracy", x_dataKey = "epochs", y_dataKey = "model_train_accuracy");
 const modelValAccuracyChart = drawCurves(queryString = '#model_val_accuracy', title = "Model validation accuracy", x_dataKey = "epochs", y_dataKey = "model_val_accuracy");
 const modelTrainLossChart = drawCurves(queryString = '#model_train_loss', title = "Model train loss", x_dataKey = "epochs", y_dataKey = "model_train_loss");
 const modelValLossChart = drawCurves(queryString = '#model_val_loss', title = "Model validation loss", x_dataKey = "epochs", y_dataKey = "model_val_loss");
-
-// === Bar charts ===
-
-const _labels = backbone_info.map(info => info["name"]);
-
-const _data = backbone_info.map(info => info["auc"]);
-
-const borderColor = backbone_info.map((info, index) => {
-    const r = Math.random() * 255;
-    const g = Math.random() * 255;
-    const b = Math.random() * 255;
-    
-    return `rgba(${r}, ${g}, ${b}, 1)`;
-});
-
-const backgroundColor = borderColor.map((rgbaStr) => {
-    const rgbaList = rgbaStr.split(", ");
-    rgbaList[rgbaList.length - 1] = '0.2)'; // alpha value
-
-    return rgbaList.join(", ");
-});
-
-const data = {
-    labels: _labels,
-    datasets: [{
-        label: "Models",
-        data: _data,
-        backgroundColor: backgroundColor,
-        borderColor: borderColor,
-        borderWidth: 1
-    }]
-};
-
-const options = {
-    plugins: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        },
-        title: {
-            display: true,
-            text: "AUC Scores"
-        },
-        legend: {
-            labels: {
-                filter: allLabelsFilter
-            }
-        }
-    }
-};
-
-const config = {
-    type: 'bar',
-    data: data,
-    options: options,
-};
-
-new Chart(
-    document.querySelector("#AUC-chart"),
-    config
-);
-
+const AUCBarChart = drawBarChart()
 // === Chart filter ===
 
 const chartFilter = (filter) => {
-    for (const chart of [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart]) {
+    for (const chart of [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart, AUCBarChart]) {
         for (let i = 0; i < backbone_info.length; i++) {
             // chart.getDatasetMeta(i).hidden = backbone_info[i].name !== filter;
             if (filter === 'all') {
@@ -179,15 +186,15 @@ function dropdown(val) {
 
     // === Confusion matrix ===
 
-    const CM_PATH = "static/visualization/";
+    const CM_PATH = "/static/visualization/";
     let cmFile = "";
     switch (val) {
-        case "Mobile-Net": cmFile = "mobilenet_cm.png"; break;
-        case "Dense-Net 121": cmFile = "densenet_cm.png"; break;
-        case "Inception v3": cmFile = "inception_cm.png"; break;
-        case "Res-Net 152v2": cmFile = "resnet_cm.png"; break;
-        case "VGG16": cmFile = "vgg16_cm.png"; break;
-        case "CBAM": cmFile = "cbam_cm.png"; break;
+        case "Mobile-Net": cmFile = "mobilenet_cm.PNG"; break;
+        case "Dense-Net 121": cmFile = "densenet_cm.PNG"; break;
+        case "Inception v3": cmFile = "inception_cm.PNG"; break;
+        case "Res-Net 152v2": cmFile = "resnet_cm.PNG"; break;
+        case "VGG16": cmFile = "vgg16_cm.PNG"; break;
+        case "CBAM": cmFile = "cbam_cm.PNG"; break;
     }
     cmFile = CM_PATH + cmFile;
 
