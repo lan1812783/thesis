@@ -1,3 +1,5 @@
+// === Scatter charts ===
+
 const allLabelsFilter = (legendItem, data) => {return !isROC || legendItem.text !== 'No-skill';}
 
 const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => {
@@ -56,8 +58,7 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
                 labels: {
                     filter: allLabelsFilter
                 },
-                // onClick: (e) => console.log(e)
-                // onClick: (e) => e.stopPropagation()
+                onClick: (e) => e.stopPropagation() // disable filter on legend touched, cuz this causes bug
             }
         }
     };
@@ -76,7 +77,6 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
         document.querySelector(queryString),
         config
     );
-    console.log(chart.data);
 };
 
 const ROCChart = drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
@@ -85,35 +85,93 @@ const modelValAccuracyChart = drawCurves(queryString = '#model_val_accuracy', ti
 const modelTrainLossChart = drawCurves(queryString = '#model_train_loss', title = "Model train loss", x_dataKey = "epochs", y_dataKey = "model_train_loss");
 const modelValLossChart = drawCurves(queryString = '#model_val_loss', title = "Model validation loss", x_dataKey = "epochs", y_dataKey = "model_val_loss");
 
+// === Bar charts ===
+
+const _labels = backbone_info.map(info => info["name"]);
+
+const _data = backbone_info.map(info => info["auc"]);
+
+const borderColor = backbone_info.map((info, index) => {
+    const r = Math.random() * 255;
+    const g = Math.random() * 255;
+    const b = Math.random() * 255;
+    
+    return `rgba(${r}, ${g}, ${b}, 1)`;
+});
+
+const backgroundColor = borderColor.map((rgbaStr) => {
+    const rgbaList = rgbaStr.split(", ");
+    rgbaList[rgbaList.length - 1] = '0.2)'; // alpha value
+
+    return rgbaList.join(", ");
+});
+
+const data = {
+    labels: _labels,
+    datasets: [{
+        label: "Models",
+        data: _data,
+        backgroundColor: backgroundColor,
+        borderColor: borderColor,
+        borderWidth: 1
+    }]
+};
+
+const options = {
+    plugins: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        title: {
+            display: true,
+            text: "AUC Scores"
+        },
+        legend: {
+            labels: {
+                filter: allLabelsFilter
+            }
+        }
+    }
+};
+
+const config = {
+    type: 'bar',
+    data: data,
+    options: options,
+};
+
+new Chart(
+    document.querySelector("#AUC-chart"),
+    config
+);
+
+// === Chart filter ===
+
 const chartFilter = (filter) => {
     for (const chart of [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart]) {
         for (let i = 0; i < backbone_info.length; i++) {
             // chart.getDatasetMeta(i).hidden = backbone_info[i].name !== filter;
-            if (filter === 'all'){
+            if (filter === 'all') {
                 chart.options.plugins.legend.labels.filter = allLabelsFilter;
                 chart.data.datasets[i].hidden = false;
             }
-            else{
-                if(chart.data.datasets[i].label == 'Mobile-Net'){
-                    console.log(chart.data);
-                }
-                chart.options.plugins.legend.labels.filter = (legendItem, data) => {return legendItem.text === filter;};                
-                chart.data.datasets[i].showLine = chart.data.datasets[i].label === filter;
-                chart.data.datasets[i].hidden = chart.data.datasets[i].label !== filter;
-                // chart.data.datasets[i].hidden = backbone_info[i].name !== filter;
+            else {
+                chart.data.datasets[i].hidden = backbone_info[i].name !== filter;
+                chart.options.plugins.legend.labels.filter = (legendItem, data) => { return legendItem.text === filter; };                
             }
-            // console.log(chart.data.labels);
             chart.update();
         }
     }
 };
 
-for (const info of backbone_info){
+for (const info of backbone_info) {
     let name = info.name.replace(/ /g,'').toLowerCase();
-    let idName = "v-pills-"+ name + "-tab";
-    document.getElementById(idName).addEventListener("click", () => {chartFilter(info.name); dropdown(info.name);});    
+    let idName = "v-pills-" + name + "-tab";
+    document.getElementById(idName).addEventListener("click", () => { chartFilter(info.name); dropdown(info.name); });    
 }
-document.getElementById("v-pills-all-tab").addEventListener("click", () => {chartFilter('all'); dropdown('All');});    
+document.getElementById("v-pills-all-tab").addEventListener("click", () => { chartFilter('all'); dropdown('All'); });    
 
 function dropdown(val) {
     var y = document.getElementsByClassName('btn btn-secondary dropdown-toggle');
@@ -129,6 +187,7 @@ function dropdown(val) {
         case "Inception v3": cmFile = "inception_cm.png"; break;
         case "Res-Net 152v2": cmFile = "resnet_cm.png"; break;
         case "VGG16": cmFile = "vgg16_cm.png"; break;
+        case "CBAM": cmFile = "cbam_cm.png"; break;
     }
     cmFile = CM_PATH + cmFile;
 

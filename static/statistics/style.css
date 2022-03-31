@@ -7,6 +7,11 @@
     width: 50%;
 }
 
+/* div that contains #cm */
+.charts > div:last-child {
+    height: 300px;
+}
+
 #cm {
     width: 100%;
     height: 100%;
