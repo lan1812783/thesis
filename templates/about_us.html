@@ -10,18 +10,34 @@
 
 {% block body %}
 <div class="container">
-    <h3>Welcome to our website</h3>
+    
+    <div class="about-us-container">
+        <div class="about-us-welcome">
+            <img src="{{ url_for('static', filename='images/company-logo.png') }}" alt="">
+            <h3>Welcome to our website</h3>
+        </div>
 
-    <img src="{{ url_for('static', filename='images/company-logo.png') }}" alt="">
+        <div class="about-us-text">
+            <h3>Who are we</h3>
+            <p>Our team is founded by:</p>
+            <ul>
+                <li>Huỳnh Đình Quang Khải - HCMUT</li>
+                <li>Bùi Hoàng Lân - HCMUT</li>
+            </ul>
 
-    <p>This site is our final year project about "Acident dectection" topic using deep learning and Keras as the main library.</p>
-    <p>To get all full source used, including:</p>
-    <ul>
-        <li>Source code</li>
-        <li>Model weight h5 files</li>
-        <li>Images</li>
-    </ul>
-    <p>Please visit our <a href="https://github.com/lan1812783/thesis">Github</a> page.</p>
+            <h3>What is this site about</h3>
+            <p>This site is our final year project about "Acident dectection" topic using deep learning and Keras as the main library.</p>
+            
+            <h3>Resources</h3>
+            <p>To get all full source used, including:</p>
+            <ul>
+                <li>Source code</li>
+                <li>Model weight h5 files</li>
+                <li>Images</li>
+            </ul>
+            <p>Please visit our <a href="https://github.com/lan1812783/thesis">Github</a> page.</p>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
