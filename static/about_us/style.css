@@ -1,0 +1,20 @@
+.about-us-container {
+    display: flex;
+    margin-top: 5%;
+}
+
+.about-us-container > .about-us-welcome > img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+.about-us-container > .about-us-welcome > h3 {
+    margin-top: 5%;
+}
+
+.about-us-container > .about-us-text {
+    flex-grow: 4;
+    margin-left: 10%;
+}
