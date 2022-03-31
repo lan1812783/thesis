@@ -55,7 +55,9 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
             legend: {
                 labels: {
                     filter: allLabelsFilter
-                }
+                },
+                // onClick: (e) => console.log(e)
+                // onClick: (e) => e.stopPropagation()
             }
         }
     };
@@ -92,10 +94,15 @@ const chartFilter = (filter) => {
                 chart.data.datasets[i].hidden = false;
             }
             else{
-                chart.data.datasets[i].hidden = backbone_info[i].name !== filter;
+                if(chart.data.datasets[i].label == 'Mobile-Net'){
+                    console.log(chart.data);
+                }
                 chart.options.plugins.legend.labels.filter = (legendItem, data) => {return legendItem.text === filter;};                
+                chart.data.datasets[i].showLine = chart.data.datasets[i].label === filter;
+                chart.data.datasets[i].hidden = chart.data.datasets[i].label !== filter;
+                // chart.data.datasets[i].hidden = backbone_info[i].name !== filter;
             }
-            console.log(chart.data.labels);
+            // console.log(chart.data.labels);
             chart.update();
         }
     }
