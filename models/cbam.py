@@ -22,6 +22,9 @@ class CBAM(keras.layers.Layer):
 class ResidualUnit(keras.layers.Layer):
     def __init__(self, filters, strides=1, is_first=False, activation="relu", **kwargs):
         super().__init__(**kwargs)
+        self.strides = strides
+        self.is_first = is_first
+        self.filters = filters
         self.activation = keras.activations.get(activation)
         self.main_layers = [
             Conv2D(filters=filters, strides=strides, kernel_size=1, padding="same"),
@@ -56,7 +59,8 @@ class ResidualUnit(keras.layers.Layer):
         RES3: input = (56, 56, 256), output = (56, 56, 256)
         RES4: input = (56, 56, 256), output = (28, 28, 512)
         """
-class VisualAttentionModule(keras.layers.Layer):
+
+class VisualAttentionModule(keras.Model):
   def __init__(self, **kwargs):
     super().__init__(**kwargs)
 
@@ -89,8 +93,8 @@ class VisualAttentionModule(keras.layers.Layer):
 
 
   def call(self, inputs):
-    # Z = inputs
-    Z = self.conv_2d(inputs)
+    Z = inputs
+    Z = self.conv_2d(Z)
     Z = self.batch_norm(Z)
     Z = self.activation(Z)
     Z = self.max_pool_2d(Z)
@@ -104,6 +108,11 @@ class VisualAttentionModule(keras.layers.Layer):
 
   def get_backbone_input_shape(self):
     return (224, 224, 3)
+
+  def build_graph(self):
+        x = tf.keras.layers.Input(shape=self.get_backbone_input_shape())
+        return tf.keras.Model(inputs=[x], 
+                              outputs=self.call(x))
 
 class TemporalFeatureExtractor(keras.layers.Layer):
   def __init__(self, **kwargs):

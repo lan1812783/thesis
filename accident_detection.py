@@ -57,10 +57,13 @@ def predict(video_name="", start_timestamp=0, end_timestamp=3, backbone_name="mo
     model, backbone, input_size, preprocess_func = construct_model(backbone_name)
 
     processed_video = process_video(video_name, start_timestamp, end_timestamp, input_size, preprocess_func)
-    #not good
+    prediction_result = model.predict(processed_video),
+    # not good
     if backbone_name == "cbam":
-        return model.predict(processed_video), save_grad_cam(model, processed_video[0])
-    return model.predict(processed_video), save_grad_cam(backbone, processed_video[0])
+        backbone = backbone.build_graph()
+    grad_cam_result = save_grad_cam(backbone, processed_video[0])
+    # return model.predict(processed_video), save_grad_cam(backbone, processed_video[0])
+    return prediction_result, grad_cam_result
 
 def get_prediction(video_name="videos/RoadAccidents002_x264.mp4", start_timestamp=0, end_timestamp=3, backbone_name="mobilenet"):
     prediction, grad_cam_path = predict(video_name, start_timestamp, end_timestamp, backbone_name)
