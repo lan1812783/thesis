@@ -10,6 +10,31 @@
 
 {% block body %}
 <div class="container">
+    <h3>Model overview</h3>
+    Our experimented models, in general, can be interpreted as 3 main modules:
+    <ul>
+        <li>Spacial features extractor module</li>
+        <li>Temporal features extractor module</li>
+        <li>Decision maker module</li>
+    </ul>
+
+    <h4>Spacial features extractor module (backbone)</h4>
+    The first part of the models is designed as an automatic feature extractor for each frame of the video segement. Here, by utilizing some of the most popular pretrained models, which are mainly used for image classifier task, like Mobilenet, VGG16, Inception, etc.
+    Using transfer learning technique, with the help of the <a href="#">Accident image dataset</a>, the pretrained model has properly adjusted its weights to recognize accident features, ready to become the spatial extractor for the accident detection model.
+    After transfer learning (using the same image dataset mentioned before), we have experimented by pluging them one by one to the main purpose model (freezing all the weights), then compare the result to se which one does the best job.
+    A time distributed is wrap arount this module so that it could go through all frames in the video segemnt, make it ready for taking the next step, input to the emporal features extractor module.
+
+    <h4>Temporal features extractor module</h4>
+    After each frames has been extracted it accident features, which are independent from the temporal feature, the features of a frame has no information about the features of previous frames, which isn't an efficient way to interpret an accident context.
+    Because of that, bringing the temporal features extractor module as the next module, continuous processing the time axis of videos.
+    Taking advantage of some of best achitecture such as ConvLSTM, GRU, Conv3D, etc. Out of them, by comparing between accuracy scores and some other metrics, we choose Conv3D as it gives the best result in general.
+
+    <h4>Decision maker module</h4>
+    When both the spatial and temporal features have been extracted, it is time for the model to declare whether there is any accident in the video segment. Hence bringing the last module as the dicision maker module, structed by several dense layers with the last layer consists of just one neuron.
+    This module will produce a possibility that a video segment contains accident. If the possibility is greater than a threshold (which is decided by looking at elbow curve of the thresholds used to compute ROC curve), then the video is predicted as having accident, else it is declared that no accident has occured.
+
+    <!-- Curves -->
+
     <h3>Backbone and Model training curves</h3>
     <div class="d-flex align-items-start">
         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -55,6 +80,10 @@
 
         <div>
             <canvas id="ROC-chart"></canvas>
+        </div>
+
+        <div>
+            <canvas id="optiomal-threshold-chart"></canvas>
         </div>
 
         <div>
