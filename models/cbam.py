@@ -19,13 +19,33 @@ class CBAM(keras.layers.Layer):
         outputs = tf.multiply(inputs, V_s)
         return outputs
 
+class SE(keras.layers.Layer):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.global_avg_pool = GlobalAveragePooling2D(keepdims=True)
+        self.flatten = Flatten()
+        self.reshape = Reshape((1, 1, -1))
+
+    def call(self, inputs):
+        if not hasattr(self, 'dense_l'):
+          self.dense_l = Dense(units=inputs.shape[-1], activation="sigmoid")
+
+        Z = inputs
+        U_c = self.global_avg_pool(Z)
+        U_c = self.flatten(U_c)
+        V_c = self.dense_l(U_c)
+        V_c = self.reshape(V_c)
+        outputs = tf.multiply(inputs, V_c)
+        return outputs
+
 class ResidualUnit(keras.layers.Layer):
-    def __init__(self, filters, strides=1, is_first=False, activation="relu", **kwargs):
+    def __init__(self, filters, strides=1, is_first=False, activation="relu", rsu_add_name="cbam", **kwargs):
         super().__init__(**kwargs)
         self.strides = strides
         self.is_first = is_first
         self.filters = filters
         self.activation = keras.activations.get(activation)
+        self.rsu_add_block = CBAM() if rsu_add_name == "cbam" else SE()
         self.main_layers = [
             Conv2D(filters=filters, strides=strides, kernel_size=1, padding="same"),
             keras.layers.BatchNormalization(),
@@ -35,7 +55,7 @@ class ResidualUnit(keras.layers.Layer):
             self.activation,
             Conv2D(filters=filters * 4, kernel_size=1, padding="same"),
             keras.layers.BatchNormalization(),
-            CBAM(),
+            self.rsu_add_block,
             keras.layers.BatchNormalization()]
         self.skip_layers = []
         if strides > 1 or is_first:
@@ -61,7 +81,7 @@ class ResidualUnit(keras.layers.Layer):
         """
 
 class VisualAttentionModule(keras.Model):
-  def __init__(self, **kwargs):
+  def __init__(self, backbone_name, **kwargs):
     super().__init__(**kwargs)
 
     self.output_H = 224
@@ -75,14 +95,14 @@ class VisualAttentionModule(keras.Model):
     self.filter_list = [64] * 2 + [128] * 4 + [256] * 6 + [512] * 3
     
     self.res_unit_list = list()
-    self.res_unit_list.append(ResidualUnit(self.filter_list[0], strides=1, is_first = True))
+    self.res_unit_list.append(ResidualUnit(self.filter_list[0], strides=1, is_first = True, rsu_add_name=backbone_name))
     prev_filters = self.filter_list[0]
     for filters in self.filter_list:
       strides = 1 if filters == prev_filters else 2
-      self.res_unit_list.append(ResidualUnit(filters, strides=strides, is_first=False))
+      self.res_unit_list.append(ResidualUnit(filters, strides=strides, is_first=False, rsu_add_name=backbone_name))
       prev_filters = filters 
 
-    self.dimen_reduce = 64
+    self.dimen_reduce = 256
     self.conv_2d_1 =  Conv2D(filters=self.dimen_reduce, kernel_size=1)
 
     self.output_H >>= 5

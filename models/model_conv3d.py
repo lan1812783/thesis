@@ -25,10 +25,10 @@ def construct_model(backbone_name="mobilenet"):
     
   BACKBONE_NAME = backbone_name
   
-  if backbone_name == "cbam":
+  if backbone_name in ["cbam", "se"]:
     handler = BackboneHandler("resnet152v2")
-    backbone = VisualAttentionModule()
-    backbone.call(keras.layers.Input(shape=(224, 224, 3)))
+    backbone = VisualAttentionModule(backbone_name)
+    # backbone.call(keras.layers.Input(shape=(224, 224, 3)))
     backbone.build((None, *handler.get_backbone_input_shape()))
     model = CBAMAccidentDetector(backbone)
     model.call(keras.layers.Input(shape=(None, 224, 224, 3)))

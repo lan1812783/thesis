@@ -194,7 +194,8 @@ function dropdown(val) {
         case "Inception v3": cmFile = "inception_cm.PNG"; break;
         case "Res-Net 152v2": cmFile = "resnet_cm.PNG"; break;
         case "VGG16": cmFile = "vgg16_cm.PNG"; break;
-        case "CBAM": cmFile = "cbam_cm.PNG"; break;
+        case "Res-Net+CBAM+ConvLSTM": cmFile = "res-net+cbam+convlstm.PNG"; break;
+        case "Res-Net+SE+ConvLSTM": cmFile = "res-net+se+convlstm.PNG"; break;
     }
     cmFile = CM_PATH + cmFile;
 
