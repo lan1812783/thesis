@@ -5,16 +5,16 @@
 />
 {% endblock %} {% block head %}
 
-{% if model_type is defined %}
-  <title>Prediction with {{model_type}}</title>
+{% if backbone_name is defined and temporal_model is defined %}
+  <title>Prediction with {{backbone_name}}+{{temporal_model}}</title>
 {% else %}
   <title>Prediction</title>
 {% endif %}
 
 {% endblock %} {% block body %}
 <div class="container-fluid">
-  {% if model_type is defined %}
-    <h3>Prediction probabilitites with {{model_type}}</h3>
+  {% if backbone_name is defined and temporal_model is defined %}
+    <h3>Prediction probabilitites with {{backbone_name}}+{{temporal_model}}</h3>
   {% else %}
     <h3>Prediction probabilitites</h3>
   {% endif %}

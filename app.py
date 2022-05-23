@@ -36,20 +36,26 @@ def form_submitted():
         flash('No selected file')
         return redirect(request.url)
     if file and allowed_file(file.filename):
-        model_type = request.form['model_type']
-        model_type_lower = model_type.replace(" ", "").replace("-", "").lower()
-        if model_type == "All":
-            #TODO
-            probability = 0.44444444
-            return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability))
+        backbone_name = request.form['backbone_name']
+        backbone_name_lower = backbone_name.replace(" ", "").replace("-", "").lower()
+        temporal_model = request.form['temporal_model']
+        temporal_model_lower = temporal_model.lower()
+
+        trained_models = [("Mobile-Net", "conv3d"), ("Mobile-Net", "convlstm"), 
+                            ("Mobile-Net", "biconvlstm"), ("Mobile-Net", "taconv3d"),
+                            ("Dense-Net 121", "conv3d"),("Dense-Net 121", "biconvlstm"),
+                            ("Inception v3", "convlstm"), ("Inception v3", "conv3d")]
+        
+        if (backbone_name, temporal_model_lower) not in trained_models:
+            return render_template('index.html', no_model=True)
         else:
             filename = secure_filename(file.filename)
             filename = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filename)
             start_timestamp = float(request.form['start'])
             end_timestamp = float(request.form['end'])
-            probability = get_prediction(filename, start_timestamp, end_timestamp, model_type_lower)[0][0]
-            return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability), model_type=model_type)
+            probability = get_prediction(filename, start_timestamp, end_timestamp, backbone_name_lower, temporal_model_lower)[0][0]
+            return render_template('prediction.html', accidentProbability="%.2f" % probability, noAccidentProbability="%.2f" % (1 - probability), backbone_name=backbone_name, temporal_model=temporal_model)
     return redirect(request.url)
 
     # probability = 0.44444

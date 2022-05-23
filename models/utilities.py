@@ -5,9 +5,9 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import InputLayer, Input, TimeDistributed, ConvLSTM2D, BatchNormalization, Flatten, Dense, Dropout, GlobalAveragePooling2D, Lambda, Conv3D, MaxPooling3D
+from tensorflow.keras.layers import InputLayer, Input, TimeDistributed, ConvLSTM2D, BatchNormalization, Flatten, Dense, Dropout, GlobalAveragePooling2D, Lambda, Conv3D, MaxPooling3D, Bidirectional, Reshape
 
-
+from .taconv3d import TemporalFeatureExtractor as TAConv3D
 from .defines import *
 from .utilities import *
 
@@ -36,23 +36,66 @@ class BackboneHandler:
   def prepare_frames(self, frame_list):
     return self.__preprocess_fn(frame_list)
 
+def get_temporal_model(temporal_model):
+  def conv3d(filters_1=128, kernel_size_1=(3, 3),
+                filters_2=64, kernel_size_2=(3, 3)):
+    return Conv3D(
+                  filters=filters_1, 
+                  kernel_size=(3, *kernel_size_1),
+                  padding='same',
+                  activation='relu'
+    ), Conv3D(          
+              filters=filters_2, 
+              kernel_size=(3, *kernel_size_2),
+              padding='same',
+              activation='relu'
+    )
+  def convlstm(filters_1=64, kernel_size_1=(3, 3), 
+                dropout_1=0.2, recurrent_dropout_1=0.1,
+                filters_2=64, kernel_size_2=(3, 3), 
+                dropout_2=0.2, recurrent_dropout_2=0.1):
+    return ConvLSTM2D(
+                      filters=filters_1, 
+                      kernel_size=kernel_size_1, 
+                      dropout=dropout_1, 
+                      recurrent_dropout=recurrent_dropout_1, 
+                      return_sequences=True
+    ), ConvLSTM2D(          
+                  filters=filters_2, 
+                  kernel_size=kernel_size_2, 
+                  dropout=dropout_2, 
+                  recurrent_dropout=recurrent_dropout_2, 
+                  return_sequences=False
+    ) 
+  def biconvlstm(filters_1=64, kernel_size_1=(3, 3), 
+                dropout_1=0.2, recurrent_dropout_1=0.1,
+                filters_2=64, kernel_size_2=(3, 3), 
+                dropout_2=0.2, recurrent_dropout_2=0.1):  
+    return Bidirectional(ConvLSTM2D(
+                                  filters=filters_1, 
+                                  kernel_size=kernel_size_1, 
+                                  dropout=dropout_1, 
+                                  recurrent_dropout=recurrent_dropout_1, 
+                                  return_sequences=True
+    )), Bidirectional(ConvLSTM2D(          
+                                filters=filters_2, 
+                                kernel_size=kernel_size_2, 
+                                dropout=dropout_2, 
+                                recurrent_dropout=recurrent_dropout_2, 
+                                return_sequences=False
+    ))           
+  if temporal_model == "biconvlstm":
+    return biconvlstm()
+  elif temporal_model == "convlstm":
+    return convlstm()
+  else: return conv3d()
+
 class TemporalFeatureExtractor(keras.layers.Layer):
-  def __init__(self, filters_1=128, kernel_size_1=(3, 3),
-                filters_2=64, kernel_size_2=(3, 3), **kwargs):
+  def __init__(self, temporal_model="conv3d",  **kwargs):
     super().__init__(**kwargs)
 
-    self.lstm_layer1 = Conv3D(
-                              filters=filters_1, 
-                              kernel_size=(3, *kernel_size_1),
-                              padding='same',
-                              activation='relu'
-    )
-    self.lstm_layer2 = Conv3D(          
-                              filters=filters_2, 
-                              kernel_size=(3, *kernel_size_2),
-                              padding='same',
-                              activation='relu'
-    )
+    self.lstm_layer1, self.lstm_layer2 = get_temporal_model(temporal_model)
+
     self.bn_layer_1 = BatchNormalization()
     self.bn_layer_2 = BatchNormalization()
     self.temporal_max_pool = keras.layers.Lambda(
@@ -90,11 +133,13 @@ class DecisionMaker(keras.layers.Layer):
     return l6
 
 class AccidentDetector(keras.Model):
-  def __init__(self, backbone, **kwargs):
+  def __init__(self, backbone, temporal_model="conv3d", **kwargs):
     super().__init__(**kwargs)
     
-    self.backbone = backbone
-    self.temporal_feature_extractor = TemporalFeatureExtractor()
+    self.backbone = backbone      
+    self.temporal_feature_extractor = TemporalFeatureExtractor(temporal_model)
+    if temporal_model == "taconv3d":
+      self.temporal_feature_extractor = TAConv3D()
     self.decision_maker = DecisionMaker()
   
   def call(self, inputs):

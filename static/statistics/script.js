@@ -13,6 +13,8 @@ const drawCurves = (queryString, title, x_dataKey, y_dataKey, isROC = false) => 
 
         return {
             label: info.name,
+            radius: 1,
+            pointHoverRadius: 8,
             backgroundColor: color,
             borderColor: color,
             data: info[x_dataKey].map((x, index) => {
@@ -149,15 +151,12 @@ const drawBarChart = () => {
 }
 
 const ROCChart = drawCurves(queryString = '#ROC-chart', title = "ROC Curves", x_dataKey = "fpr", y_dataKey = "tpr", isROC = true);
-const modelTrainAccuracyChart = drawCurves(queryString = '#model-train-accuracy-chart', title = "Model train accuracy", x_dataKey = "epochs", y_dataKey = "model_train_accuracy");
-const modelValAccuracyChart = drawCurves(queryString = '#model_val_accuracy', title = "Model validation accuracy", x_dataKey = "epochs", y_dataKey = "model_val_accuracy");
-const modelTrainLossChart = drawCurves(queryString = '#model_train_loss', title = "Model train loss", x_dataKey = "epochs", y_dataKey = "model_train_loss");
-const modelValLossChart = drawCurves(queryString = '#model_val_loss', title = "Model validation loss", x_dataKey = "epochs", y_dataKey = "model_val_loss");
 const AUCBarChart = drawBarChart()
+
 // === Chart filter ===
 
 const chartFilter = (filter) => {
-    for (const chart of [ROCChart, modelTrainAccuracyChart, modelValAccuracyChart, modelTrainLossChart, modelValLossChart, AUCBarChart]) {
+    for (const chart of [ROCChart, AUCBarChart]) {
         for (let i = 0; i < backbone_info.length; i++) {
             // chart.getDatasetMeta(i).hidden = backbone_info[i].name !== filter;
             if (filter === 'all') {
@@ -189,13 +188,18 @@ function dropdown(val) {
     const CM_PATH = "/static/visualization/";
     let cmFile = "";
     switch (val) {
-        case "Mobile-Net": cmFile = "mobilenet_cm.PNG"; break;
-        case "Dense-Net 121": cmFile = "densenet_cm.PNG"; break;
-        case "Inception v3": cmFile = "inception_cm.PNG"; break;
+        case "Mobile-Net+Conv3D": cmFile = "mobilenet+conv3d_cm.PNG"; break;
+        case "Mobile-Net+ConvLSTM": cmFile = "mobilenet+convlstm_cm.PNG"; break;
+        case "Mobile-Net+Bi-ConvLSTM": cmFile = "mobilenet+biconvlstm_cm.PNG"; break;
+        case "Mobile-Net+TAConv3D": cmFile = "mobilenet+taconv3d_cm.PNG"; break;
+        case "Dense-Net121+Conv3D": cmFile = "densenet+conv3d_cm.PNG"; break;
+        case "Dense-Net121+Bi-ConvLSTM": cmFile = "densenet+biconvlstm_cm.PNG"; break;
+        case "Inceptionv3+Conv3D": cmFile = "inception+conv3d_cm.PNG"; break;
+        case "Inceptionv3+ConvLSTM": cmFile = "inception+convlstm_cm.PNG"; break;
         case "Res-Net 152v2": cmFile = "resnet_cm.PNG"; break;
         case "VGG16": cmFile = "vgg16_cm.PNG"; break;
-        case "Res-Net+CBAM+ConvLSTM": cmFile = "res-net+cbam+convlstm.PNG"; break;
-        case "Res-Net+SE+ConvLSTM": cmFile = "res-net+se+convlstm.PNG"; break;
+        case "Res-Net+CBAM+ConvLSTM": cmFile = "res-net+cbam+convlstm_cm.PNG"; break;
+        case "Res-Net+SE+ConvLSTM": cmFile = "res-net+se+convlstm_cm.png"; break;
     }
     cmFile = CM_PATH + cmFile;
 

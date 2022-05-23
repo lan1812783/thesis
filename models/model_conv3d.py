@@ -9,10 +9,10 @@ from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy,
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow import keras
 
-def get_file_weights_name(backbone_name):
-  return "models/model_weights/" + backbone_name + '_weight.h5'
+def get_file_weights_name(backbone_name, temporal_model):
+  return "models/model_weights/" + backbone_name + "_" + temporal_model + '_weight.h5'
 
-def construct_model(backbone_name="mobilenet"):
+def construct_model(backbone_name="mobilenet", temporal_model="conv3d"):
   """
   # **
     Return a tuple of:
@@ -37,10 +37,10 @@ def construct_model(backbone_name="mobilenet"):
       raise AssertionError("No backbone found!")
     handler = BackboneHandler(BACKBONE_NAME)
     backbone = handler.get_model()
-    model = AccidentDetector(backbone)
+    model = AccidentDetector(backbone, temporal_model)
   model.build((None, None, *handler.get_backbone_input_shape()))
   model.summary()
 
-  model.load_weights(get_file_weights_name(BACKBONE_NAME))
+  model.load_weights(get_file_weights_name(BACKBONE_NAME, temporal_model))
 
   return model, backbone, handler.get_backbone_input_size(), handler.prepare_frames
